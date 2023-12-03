@@ -124,7 +124,6 @@ namespace AdventOfCodeAPI.repository
             var partNumberTotal = 0;
             var partNumberPositionCollections = new List<PartNumberPositionCollection>();
             var symbolPositionCollections = new List<SymbolPositionCollection>();
-            var testing = new List<int>();
             for (int i = 0; i < partTexts.Count; i++)
             {
                 var numbersInString = Regex.Matches(partTexts[i], "[0-9][0-9]{0,4}");
@@ -133,7 +132,7 @@ namespace AdventOfCodeAPI.repository
                 {
                     var startingIndexOfPartNumber = partTexts[i].IndexOf(number.ToString(), nextIndex);
                     var endingIndex = startingIndexOfPartNumber + number.ToString().Length - 1;
-                    nextIndex = endingIndex;
+                    nextIndex = endingIndex + 1;
                     var partNumberPositionCollection = new PartNumberPositionCollection
                     {
                         PartNumber = Convert.ToInt32(number.ToString()),
@@ -194,17 +193,102 @@ namespace AdventOfCodeAPI.repository
                 }
                 if (isSymbolAdjacent)
                 {
-                    testing.Add(partNumberPositionCollection.PartNumber);
                     partNumberTotal += partNumberPositionCollection.PartNumber;
                 }
             }
-            int total = testing.Sum(x => Convert.ToInt32(x));
             return partNumberTotal;
         }
 
         public int ThreeBLogic(List<string> partTexts)
         {
-            return 0;
+            var gearRatioTotal = 0;
+            var partNumberPositionCollections = new List<PartNumberPositionCollection>();
+            var symbolPositionCollections = new List<SymbolPositionCollection>();
+            for (int i = 0; i < partTexts.Count; i++)
+            {
+                var numbersInString = Regex.Matches(partTexts[i], "[0-9][0-9]{0,4}");
+                var nextIndex = 0;
+                foreach (var number in numbersInString)
+                {
+                    var startingIndexOfPartNumber = partTexts[i].IndexOf(number.ToString(), nextIndex);
+                    var endingIndex = startingIndexOfPartNumber + number.ToString().Length - 1;
+                    nextIndex = endingIndex + 1;
+                    var partNumberPositionCollection = new PartNumberPositionCollection
+                    {
+                        PartNumber = Convert.ToInt32(number.ToString()),
+                        PartTextRowIndex = i,
+                        PartNumberStartingIndex = startingIndexOfPartNumber,
+                        PartNumberEndingIndex = endingIndex
+                    };
+                    partNumberPositionCollections.Add(partNumberPositionCollection);
+                }
+                for (int j = 0; j < partTexts[i].Length; j++)
+                {
+                    var isSymbol = Regex.IsMatch(partTexts[i].Substring(j, 1), "[*]");
+                    if (isSymbol)
+                    {
+                        var symbolPositionCollection = new SymbolPositionCollection
+                        {
+                            PartTextRowIndex = i,
+                            SymbolPositionIndex = j
+                        };
+                        symbolPositionCollections.Add(symbolPositionCollection);
+                    }
+                }
+            }
+            foreach (var symbolPositionCollection in symbolPositionCollections)
+            {
+                var adjacentPartNumbers = new List<int>();
+                var rowAbove = symbolPositionCollection.PartTextRowIndex - 1;
+                var currentRow = symbolPositionCollection.PartTextRowIndex;
+                var rowBelow = symbolPositionCollection.PartTextRowIndex + 1;
+                var startingPosition = symbolPositionCollection.SymbolPositionIndex;
+                var endingPosition = symbolPositionCollection.SymbolPositionIndex;
+                var adjacentPositions = new List<int>();
+                for (int i = startingPosition - 1; i <= endingPosition + 1; i++)
+                {
+                    adjacentPositions.Add(i);
+                }
+                var rowIndexes = new List<int>
+                {
+                    rowAbove, currentRow, rowBelow
+                };
+                var topAdjacentPartNumbers = partNumberPositionCollections.Where(x => x.PartTextRowIndex == rowAbove
+                    && ((x.PartNumberEndingIndex >= adjacentPositions.First() && x.PartNumberEndingIndex <= adjacentPositions.Last())
+                    || (x.PartNumberStartingIndex >= adjacentPositions.First() && x.PartNumberStartingIndex <= adjacentPositions.Last())))
+                    .ToList();
+                if (topAdjacentPartNumbers.Any())
+                {
+                    adjacentPartNumbers.AddRange(topAdjacentPartNumbers.Select(x => x.PartNumber));
+                }
+                var leftAdjacentPartNumber = partNumberPositionCollections.FirstOrDefault(x => x.PartTextRowIndex == currentRow
+                    && x.PartNumberEndingIndex == adjacentPositions.First());
+                if (leftAdjacentPartNumber != null)
+                {
+                    adjacentPartNumbers.Add(leftAdjacentPartNumber.PartNumber);
+                }
+                var rightAdjacentPartNumber = partNumberPositionCollections.FirstOrDefault(x => x.PartTextRowIndex == currentRow
+                    && x.PartNumberStartingIndex == adjacentPositions.Last());
+                if (rightAdjacentPartNumber != null)
+                {
+                    adjacentPartNumbers.Add(rightAdjacentPartNumber.PartNumber);
+                }
+                var bottomAdjacentPartNumbers = partNumberPositionCollections.Where(x => x.PartTextRowIndex == rowBelow
+                    && ((x.PartNumberEndingIndex >= adjacentPositions.First() && x.PartNumberEndingIndex <= adjacentPositions.Last())
+                    || (x.PartNumberStartingIndex >= adjacentPositions.First() && x.PartNumberStartingIndex <= adjacentPositions.Last())))
+                    .ToList();
+                if (bottomAdjacentPartNumbers.Any())
+                {
+                    adjacentPartNumbers.AddRange(bottomAdjacentPartNumbers.Select(x => x.PartNumber));
+                }
+
+                if (adjacentPartNumbers.Count == 2)
+                {
+                    int gearRatio = adjacentPartNumbers[0] * adjacentPartNumbers[1];
+                    gearRatioTotal += gearRatio;
+                }
+            }
+            return gearRatioTotal;
         }
 
         #region private methods

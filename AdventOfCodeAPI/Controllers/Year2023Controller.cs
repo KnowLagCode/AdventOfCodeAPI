@@ -71,7 +71,7 @@ namespace AdventOfCodeAPI.Controllers
         public ActionResult<int> PostCalibrationSum3B(bool sampleData)
         {
             string? data = sampleData ? adventOfCode2023ThreeModel.ThreeBSampleData : adventOfCode2023ThreeModel.ThreeBData;
-            var partTexts = data.Split('\r').ToList();
+            var partTexts = data.Split("\r\n").ToList();
             return adventOfCode2023Logic.ThreeBLogic(partTexts);
         }
     }
