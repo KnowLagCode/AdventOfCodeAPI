@@ -14,6 +14,7 @@ namespace AdventOfCodeAPI.Controllers
         private readonly AdventOfCode2023OneModel adventOfCode2023OneModel = new();
         private readonly AdventOfCode2023TwoModel adventOfCode2023TwoModel = new();
         private readonly AdventOfCode2023ThreeModel adventOfCode2023ThreeModel = new();
+        private readonly AdventOfCode2023FourModel adventOfCode2023FourModel = new();
 
         public Year2023Controller(ILogger<Year2023Controller> logger)
         {
@@ -73,6 +74,24 @@ namespace AdventOfCodeAPI.Controllers
             string? data = sampleData ? adventOfCode2023ThreeModel.ThreeBSampleData : adventOfCode2023ThreeModel.ThreeBData;
             var partTexts = data.Split("\r\n").ToList();
             return adventOfCode2023Logic.ThreeBLogic(partTexts);
+        }
+
+        [HttpPost()]
+        [Route("4a")]
+        public ActionResult<int> PostCalibrationSum4A(bool sampleData)
+        {
+            string? data = sampleData ? adventOfCode2023FourModel.FourASampleData : adventOfCode2023FourModel.FourAData;
+            var scratchOffTexts = data.Split("\r\n").ToList();
+            return adventOfCode2023Logic.FourALogic(scratchOffTexts);
+        }
+
+        [HttpPost()]
+        [Route("4b")]
+        public ActionResult<int> PostCalibrationSum4B(bool sampleData)
+        {
+            string? data = sampleData ? adventOfCode2023FourModel.FourBSampleData : adventOfCode2023FourModel.FourBData;
+            var scratchOffTexts = data.Split("\r\n").ToList();
+            return adventOfCode2023Logic.FourBLogic(scratchOffTexts);
         }
     }
 }

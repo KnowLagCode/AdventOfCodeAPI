@@ -291,6 +291,48 @@ namespace AdventOfCodeAPI.repository
             return gearRatioTotal;
         }
 
+        public int FourALogic(List<string> scratchOffTexts)
+        {
+            var winningsTotal = 0;
+            foreach (var scratchOffText in scratchOffTexts)
+            {
+                var gameSection = scratchOffText.Split(":").ToList();
+                var numbersSection = gameSection[1].Split("|").ToList();
+                var winnableNumbers = numbersSection[0].Split(" ").ToList();
+                winnableNumbers = winnableNumbers.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                var playedNumbers = numbersSection[1].Split(" ").ToList();
+                playedNumbers = playedNumbers.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                var winningNumbers = winnableNumbers.Intersect(playedNumbers).ToList();
+                winningsTotal += Convert.ToInt32(Math.Pow(2, winningNumbers.Count - 1));
+            }
+            return winningsTotal;
+        }
+
+        public int FourBLogic(List<string> scratchOffTexts)
+        {
+            var scratchOffssTotal = 0;
+            var winningNumberAmounts = Enumerable.Repeat(1, scratchOffTexts.Count).ToList();
+            for (int i = 0; i < scratchOffTexts.Count; i++)
+            {
+                var gameSection = scratchOffTexts[i].Split(":").ToList();
+                var numbersSection = gameSection[1].Split("|").ToList();
+                var winnableNumbers = numbersSection[0].Split(" ").ToList();
+                winnableNumbers = winnableNumbers.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                var playedNumbers = numbersSection[1].Split(" ").ToList();
+                playedNumbers = playedNumbers.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                var winningNumbers = winnableNumbers.Intersect(playedNumbers).ToList();
+                for (int j = 0; j < winningNumberAmounts[i]; j++)
+                {
+                    for (int k = i; k < winningNumbers.Count + i; k++)
+                    {
+                        winningNumberAmounts[k + 1] += 1;
+                    }
+                }
+            }
+            scratchOffssTotal = winningNumberAmounts.Sum();
+            return scratchOffssTotal;
+        }
+
         #region private methods
         private static string? WordToNumberConverter(string word)
         {
