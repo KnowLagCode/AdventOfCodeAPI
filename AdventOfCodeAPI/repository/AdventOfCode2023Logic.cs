@@ -1,11 +1,13 @@
 ﻿using AdventOfCodeAPI.Models;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCodeAPI.repository
 {
     public class AdventOfCode2023Logic
     {
-        public int OneALogic(List<string> calibrationTexts)
+        #region Day One
+        public int DayOnePartOneLogic(List<string> calibrationTexts)
         {
             var calibrationTotal = 0;
             foreach (var calibration in calibrationTexts)
@@ -26,7 +28,7 @@ namespace AdventOfCodeAPI.repository
             return calibrationTotal;
         }
 
-        public int OneBLogic(List<string> calibrationTexts)
+        public int DayOnePartTwoLogic(List<string> calibrationTexts)
         {
             var calibrationTotal = 0;
             foreach (var calibration in calibrationTexts)
@@ -48,8 +50,10 @@ namespace AdventOfCodeAPI.repository
             }
             return calibrationTotal;
         }
+        #endregion
 
-        public int TwoALogic(List<string> gameTexts, int blueThreshold, int greenThreshold, int redThreshold)
+        #region Day Two
+        public int DayTwoPartOneLogic(List<string> gameTexts, int blueThreshold, int greenThreshold, int redThreshold)
         {
             var gameTotal = 0;
             foreach (var game in gameTexts)
@@ -85,7 +89,7 @@ namespace AdventOfCodeAPI.repository
             return gameTotal;
         }
 
-        public int TwoBLogic(List<string> gameTexts)
+        public int DayTwoPartTwoLogic(List<string> gameTexts)
         {
             var gameTotal = 0;
             foreach (var game in gameTexts)
@@ -118,8 +122,10 @@ namespace AdventOfCodeAPI.repository
             }
             return gameTotal;
         }
+        #endregion
 
-        public int ThreeALogic(List<string> partTexts)
+        #region Day Three
+        public int DayThreePartOneLogic(List<string> partTexts)
         {
             var partNumberTotal = 0;
             var partNumberPositionCollections = new List<PartNumberPositionCollection>();
@@ -199,7 +205,7 @@ namespace AdventOfCodeAPI.repository
             return partNumberTotal;
         }
 
-        public int ThreeBLogic(List<string> partTexts)
+        public int DayThreePartTwoLogic(List<string> partTexts)
         {
             var gearRatioTotal = 0;
             var partNumberPositionCollections = new List<PartNumberPositionCollection>();
@@ -290,8 +296,10 @@ namespace AdventOfCodeAPI.repository
             }
             return gearRatioTotal;
         }
+        #endregion
 
-        public int FourALogic(List<string> scratchOffTexts)
+        #region Day Four
+        public int DayFourPartOneLogic(List<string> scratchOffTexts)
         {
             var winningsTotal = 0;
             foreach (var scratchOffText in scratchOffTexts)
@@ -308,9 +316,9 @@ namespace AdventOfCodeAPI.repository
             return winningsTotal;
         }
 
-        public int FourBLogic(List<string> scratchOffTexts)
+        public int DayFourPartTwoLogic(List<string> scratchOffTexts)
         {
-            var scratchOffssTotal = 0;
+            var scratchOffsTotal = 0;
             var winningNumberAmounts = Enumerable.Repeat(1, scratchOffTexts.Count).ToList();
             for (int i = 0; i < scratchOffTexts.Count; i++)
             {
@@ -329,9 +337,70 @@ namespace AdventOfCodeAPI.repository
                     }
                 }
             }
-            scratchOffssTotal = winningNumberAmounts.Sum();
-            return scratchOffssTotal;
+            scratchOffsTotal = winningNumberAmounts.Sum();
+            return scratchOffsTotal;
         }
+        #endregion
+
+        #region Day Five
+        public int DayFivePartOneLogic(List<string> dataRows)
+        {
+            var Total = 0;
+            foreach (var dataRow in dataRows)
+            {
+
+            }
+            for (int i = 0; i < dataRows.Count; i++)
+            {
+
+            }
+            return Total;
+        }
+
+        public int DayFivePartTwoLogic(List<string> dataRows)
+        {
+            var Total = 0;
+            foreach (var dataRow in dataRows)
+            {
+
+            }
+            for (int i = 0; i < dataRows.Count; i++)
+            {
+
+            }
+            return Total;
+        }
+        #endregion
+
+        #region Day
+        public int DayPartOneLogic(List<string> dataRows)
+        {
+            var Total = 0;
+            foreach (var dataRow in dataRows)
+            {
+
+            }
+            for (int i = 0; i < dataRows.Count; i++)
+            {
+
+            }
+            return Total;
+        }
+
+        public int DayPartTwoLogic(List<string> dataRows)
+        {
+            var Total = 0;
+            foreach (var dataRow in dataRows)
+            {
+
+            }
+            for (int i = 0; i < dataRows.Count; i++)
+            {
+
+            }
+            return Total;
+        }
+        #endregion
 
         #region private methods
         private static string? WordToNumberConverter(string word)

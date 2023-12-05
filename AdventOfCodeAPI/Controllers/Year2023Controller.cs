@@ -15,6 +15,7 @@ namespace AdventOfCodeAPI.Controllers
         private readonly AdventOfCode2023TwoModel adventOfCode2023TwoModel = new();
         private readonly AdventOfCode2023ThreeModel adventOfCode2023ThreeModel = new();
         private readonly AdventOfCode2023FourModel adventOfCode2023FourModel = new();
+        private readonly AdventOfCode2023FiveModel adventOfCode2023FiveModel = new();
 
         public Year2023Controller(ILogger<Year2023Controller> logger)
         {
@@ -22,76 +23,121 @@ namespace AdventOfCodeAPI.Controllers
         }
 
         [HttpPost()]
-        [Route("1a")]
-        public ActionResult<int> PostCalibrationSumA(bool sampleData)
+        [Route("Day1")]
+        public ActionResult<int> PostDay1(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
-            string? data = sampleData ? adventOfCode2023OneModel.OneASampleData : adventOfCode2023OneModel.OneAData;
-            var calibrationTexts = data.Split('\r').ToList();
-            return adventOfCode2023Logic.OneALogic(calibrationTexts);
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023OneModel.OneASampleData : adventOfCode2023OneModel.OneAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023OneModel.OneBSampleData : adventOfCode2023OneModel.OneBData;
+            }
+            var dataRows = data.Split('\r').ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DayOnePartOneLogic(dataRows) :
+                adventOfCode2023Logic.DayOnePartTwoLogic(dataRows);
+            return total;
         }
 
         [HttpPost()]
-        [Route("1b")]
-        public ActionResult<int> PostCalibrationSumB(bool sampleData)
+        [Route("Day2")]
+        public ActionResult<int> PostDay2(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
-            string? data = sampleData ? adventOfCode2023OneModel.OneBSampleData : adventOfCode2023OneModel.OneBData;
-            var calibrationTexts = data.Split('\r').ToList();
-            return adventOfCode2023Logic.OneBLogic(calibrationTexts);
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023TwoModel.TwoASampleData : adventOfCode2023TwoModel.TwoAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023TwoModel.TwoBSampleData : adventOfCode2023TwoModel.TwoBData;
+            }
+            var dataRows = data.Split('\r').ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DayTwoPartOneLogic(dataRows, 
+                adventOfCode2023TwoModel.TwoADataBlueCubeMax,
+                adventOfCode2023TwoModel.TwoADataGreenCubeMax, 
+                adventOfCode2023TwoModel.TwoADataRedCubeMax) :
+                adventOfCode2023Logic.DayTwoPartTwoLogic(dataRows);
+            return total;
         }
 
         [HttpPost()]
-        [Route("2a")]
-        public ActionResult<int> PostCalibrationSum2A(bool sampleData)
+        [Route("Day3")]
+        public ActionResult<int> PostDay3(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
-            string? data = sampleData ? adventOfCode2023TwoModel.TwoASampleData : adventOfCode2023TwoModel.TwoAData;
-            var gameTexts = data.Split('\r').ToList();
-            return adventOfCode2023Logic.TwoALogic(gameTexts, adventOfCode2023TwoModel.TwoADataBlueCubeMax,
-                adventOfCode2023TwoModel.TwoADataGreenCubeMax, adventOfCode2023TwoModel.TwoADataRedCubeMax);
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023ThreeModel.ThreeASampleData : adventOfCode2023ThreeModel.ThreeAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023ThreeModel.ThreeBSampleData : adventOfCode2023ThreeModel.ThreeBData;
+            }
+            var dataRows = data.Split("\r\n").ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DayThreePartOneLogic(dataRows) :
+                adventOfCode2023Logic.DayThreePartTwoLogic(dataRows);
+            return total;
         }
 
         [HttpPost()]
-        [Route("2b")]
-        public ActionResult<int> PostCalibrationSum2B(bool sampleData)
+        [Route("Day4")]
+        public ActionResult<int> PostDay4(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
-            string? data = sampleData ? adventOfCode2023TwoModel.TwoBSampleData : adventOfCode2023TwoModel.TwoBData;
-            var gameTexts = data.Split('\r').ToList();
-            return adventOfCode2023Logic.TwoBLogic(gameTexts);
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023FourModel.FourASampleData : adventOfCode2023FourModel.FourAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023FourModel.FourBSampleData : adventOfCode2023FourModel.FourBData;
+            }
+            var dataRows = data.Split("\r\n").ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DayFourPartOneLogic(dataRows) :
+                adventOfCode2023Logic.DayFourPartTwoLogic(dataRows);
+            return total;
         }
 
         [HttpPost()]
-        [Route("3a")]
-        public ActionResult<int> PostCalibrationSum3A(bool sampleData)
+        [Route("Day5")]
+        public ActionResult<int> PostDay5(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
-            string? data = sampleData ? adventOfCode2023ThreeModel.ThreeASampleData : adventOfCode2023ThreeModel.ThreeAData;
-            var partTexts = data.Split("\r\n").ToList();
-            return adventOfCode2023Logic.ThreeALogic(partTexts);
-        }
-
-        [HttpPost()]
-        [Route("3b")]
-        public ActionResult<int> PostCalibrationSum3B(bool sampleData)
-        {
-            string? data = sampleData ? adventOfCode2023ThreeModel.ThreeBSampleData : adventOfCode2023ThreeModel.ThreeBData;
-            var partTexts = data.Split("\r\n").ToList();
-            return adventOfCode2023Logic.ThreeBLogic(partTexts);
-        }
-
-        [HttpPost()]
-        [Route("4a")]
-        public ActionResult<int> PostCalibrationSum4A(bool sampleData)
-        {
-            string? data = sampleData ? adventOfCode2023FourModel.FourASampleData : adventOfCode2023FourModel.FourAData;
-            var scratchOffTexts = data.Split("\r\n").ToList();
-            return adventOfCode2023Logic.FourALogic(scratchOffTexts);
-        }
-
-        [HttpPost()]
-        [Route("4b")]
-        public ActionResult<int> PostCalibrationSum4B(bool sampleData)
-        {
-            string? data = sampleData ? adventOfCode2023FourModel.FourBSampleData : adventOfCode2023FourModel.FourBData;
-            var scratchOffTexts = data.Split("\r\n").ToList();
-            return adventOfCode2023Logic.FourBLogic(scratchOffTexts);
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023FiveModel.FiveASampleData : adventOfCode2023FiveModel.FiveAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023FiveModel.FiveBSampleData : adventOfCode2023FiveModel.FiveBData;
+            }
+            var dataRows = data.Split("\r\n").ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DayFivePartOneLogic(dataRows) :
+                adventOfCode2023Logic.DayFivePartTwoLogic(dataRows);
+            return total;
         }
     }
 }
