@@ -343,32 +343,54 @@ namespace AdventOfCodeAPI.repository
         #endregion
 
         #region Day Five
-        public int DayFivePartOneLogic(List<string> dataRows)
+        public async Task<long> DayFivePartOneLogicAsync(List<string> dataRows)
         {
-            var Total = 0;
+            var seedMaps = new SeedMaps();
             foreach (var dataRow in dataRows)
             {
-
+                if (dataRow.Contains("seeds:"))
+                {
+                    var seedsSplits = dataRow.Split(':').ToList();
+                    var seeds = seedsSplits[1].Split(" ").ToList();
+                    seeds = seeds.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                    seedMaps.SeedList = seeds.Select(long.Parse).ToList();
+                }
+                else
+                {
+                    seedMaps = CreateSeedMaps(dataRow, seedMaps);
+                }
             }
-            for (int i = 0; i < dataRows.Count; i++)
-            {
-
-            }
-            return Total;
+            return await SeedToMinLocationMapTraversalAsync(seedMaps);
         }
 
-        public int DayFivePartTwoLogic(List<string> dataRows)
+        public async Task<long> DayFivePartTwoLogicAsync(List<string> dataRows)
         {
-            var Total = 0;
+            var seedMaps = new SeedMaps
+            {
+                SeedList = new List<long>()
+            };
             foreach (var dataRow in dataRows)
             {
-
+                if (dataRow.Contains("seeds:"))
+                {
+                    var seedsSplits = dataRow.Split(':').ToList();
+                    var seeds = seedsSplits[1].Split(" ").ToList();
+                    seeds = seeds.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                    var seedMapList = seeds.Select(long.Parse).ToList();
+                    for (int i = 0; i < seedMapList.Count; i += 2)
+                    {
+                        for (int j = 0; j < seedMapList[i+1]; j++)
+                        {
+                            seedMaps.SeedList.Add(seedMapList[i] + j);
+                        }
+                    }
+                }
+                else
+                {
+                    seedMaps = CreateSeedMaps(dataRow, seedMaps);
+                }
             }
-            for (int i = 0; i < dataRows.Count; i++)
-            {
-
-            }
-            return Total;
+            return await SeedToMinLocationMapTraversalAsync(seedMaps);
         }
         #endregion
 
@@ -448,6 +470,99 @@ namespace AdventOfCodeAPI.repository
                 return numberOfCubes; 
             }
             return colorCubeMax;
+        }
+
+        private static SeedMaps CreateSeedMaps(string dataRow, SeedMaps seedMaps)
+        {
+            if (dataRow.Contains("seed-to-soil map:"))
+            {
+                seedMaps.SeedToSoilMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("soil-to-fertilizer map:"))
+            {
+                seedMaps.SoilToFertilizerMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("fertilizer-to-water map:"))
+            {
+                seedMaps.FertilizerToWaterMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("water-to-light map:"))
+            {
+                seedMaps.WaterToLightMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("light-to-temperature map:"))
+            {
+                seedMaps.LightToTemperatureMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("temperature-to-humidity map:"))
+            {
+                seedMaps.TemperatureToHumidityMaps = ReturnIntList(dataRow);
+            }
+            if (dataRow.Contains("humidity-to-location map:"))
+            {
+                seedMaps.HumidityToLocationMaps = ReturnIntList(dataRow);
+            }
+            return seedMaps;
+        }
+
+        private static List<SeedMapParts> ReturnIntList(string dataRow)
+        {
+            var seedMapPartsList = new List<SeedMapParts>();
+            var stringSplits = dataRow.Split("\r\n").ToList();
+            stringSplits.RemoveAt(0);
+            foreach (var stringSplit in stringSplits)
+            {
+                var numberSplits = stringSplit.Split(" ").ToList();
+                numberSplits = numberSplits.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                seedMapPartsList.Add(new SeedMapParts
+                {
+                    SourceRangeStart = long.Parse(numberSplits[1]),
+                    DestinationRangeStart = long.Parse(numberSplits[0]),
+                    RangeLength = long.Parse(numberSplits[2]),
+                });
+            }
+            return seedMapPartsList;
+        }
+
+        private static async Task<long> SeedToMinLocationMapTraversalAsync(SeedMaps seedMaps)
+        {
+            var minLocation = long.MaxValue;
+            foreach (var seed in seedMaps.SeedList)
+            {
+                var nextMapNumber = seed;
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.SeedToSoilMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.SoilToFertilizerMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.FertilizerToWaterMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.WaterToLightMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.LightToTemperatureMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.TemperatureToHumidityMaps, nextMapNumber);
+                nextMapNumber = await GetNextMapNumberAsync(seedMaps.HumidityToLocationMaps, nextMapNumber);
+                minLocation = nextMapNumber < minLocation ? nextMapNumber : minLocation;
+            }
+            return minLocation;
+        }
+
+        private static Task<long> GetNextMapNumberAsync(List<SeedMapParts> seedTraversalMaps, long nextMapNumber)
+        {
+            //foreach (var seedTraversalMap in seedTraversalMaps)
+            //{
+            //    if (nextMapNumber >= seedTraversalMap.SourceRangeStart
+            //        && nextMapNumber <= seedTraversalMap.SourceRangeStart + seedTraversalMap.RangeLength - 1)
+            //    {
+            //        return seedTraversalMap.DestinationRangeStart + nextMapNumber - seedTraversalMap.SourceRangeStart;
+            //    }
+            //}
+            //return nextMapNumber;
+            var seedTraversalMap = seedTraversalMaps.FirstOrDefault(x => nextMapNumber >= x.SourceRangeStart
+                    && nextMapNumber <= x.SourceRangeStart + x.RangeLength - 1);
+            if(seedTraversalMap == null)
+            {
+                return Task.FromResult(nextMapNumber);
+            }
+            else
+            {
+                return Task.FromResult(seedTraversalMap.DestinationRangeStart + nextMapNumber - seedTraversalMap.SourceRangeStart);
+            }
         }
         #endregion
     }

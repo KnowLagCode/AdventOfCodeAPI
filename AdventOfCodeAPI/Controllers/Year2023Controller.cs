@@ -119,7 +119,7 @@ namespace AdventOfCodeAPI.Controllers
 
         [HttpPost()]
         [Route("Day5")]
-        public ActionResult<int> PostDay5(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
+        public async Task<ActionResult<long>> PostDay5Async(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
         {
             if (isPart1 && isPart2 || (!isPart1 && !isPart2))
             {
@@ -134,9 +134,9 @@ namespace AdventOfCodeAPI.Controllers
             {
                 data = sampleData ? adventOfCode2023FiveModel.FiveBSampleData : adventOfCode2023FiveModel.FiveBData;
             }
-            var dataRows = data.Split("\r\n").ToList();
-            var total = isPart1 ? adventOfCode2023Logic.DayFivePartOneLogic(dataRows) :
-                adventOfCode2023Logic.DayFivePartTwoLogic(dataRows);
+            var dataRows = data.Split("\r\n\r\n").ToList();
+            var total = isPart1 ? await adventOfCode2023Logic.DayFivePartOneLogicAsync(dataRows) :
+                await adventOfCode2023Logic.DayFivePartTwoLogicAsync(dataRows);
             return total;
         }
     }
