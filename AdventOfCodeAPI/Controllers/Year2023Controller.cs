@@ -16,6 +16,7 @@ namespace AdventOfCodeAPI.Controllers
         private readonly AdventOfCode2023ThreeModel adventOfCode2023ThreeModel = new();
         private readonly AdventOfCode2023FourModel adventOfCode2023FourModel = new();
         private readonly AdventOfCode2023FiveModel adventOfCode2023FiveModel = new();
+        private readonly AdventOfCode2023SixModel adventOfCode2023SixModel = new();
 
         public Year2023Controller(ILogger<Year2023Controller> logger)
         {
@@ -137,6 +138,29 @@ namespace AdventOfCodeAPI.Controllers
             var dataRows = data.Split("\r\n\r\n").ToList();
             var total = isPart1 ? await adventOfCode2023Logic.DayFivePartOneLogicAsync(dataRows) :
                 await adventOfCode2023Logic.DayFivePartTwoLogicAsync(dataRows);
+            return total;
+        }
+
+        [HttpPost()]
+        [Route("Day6")]
+        public ActionResult<long> PostDay6(bool sampleData = true, bool isPart1 = true, bool isPart2 = false)
+        {
+            if (isPart1 && isPart2 || (!isPart1 && !isPart2))
+            {
+                return 0;
+            }
+            string? data;
+            if (isPart1)
+            {
+                data = sampleData ? adventOfCode2023SixModel.SixASampleData : adventOfCode2023SixModel.SixAData;
+            }
+            else
+            {
+                data = sampleData ? adventOfCode2023SixModel.SixBSampleData : adventOfCode2023SixModel.SixBData;
+            }
+            var dataRows = data.Split("\r\n").ToList();
+            var total = isPart1 ? adventOfCode2023Logic.DaySixPartOneLogic(dataRows) :
+                adventOfCode2023Logic.DaySixPartTwoLogic(dataRows);
             return total;
         }
     }

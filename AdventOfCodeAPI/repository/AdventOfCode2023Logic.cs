@@ -394,6 +394,54 @@ namespace AdventOfCodeAPI.repository
         }
         #endregion
 
+        #region Day Six
+        public int DaySixPartOneLogic(List<string> dataRows)
+        {
+            var winningButtonPressesList = new List<int>();
+            var timesList = ConvertDataStringToIntString(dataRows[0]);
+            var distancesList = ConvertDataStringToIntString(dataRows[1]);
+            for (int i = 0; i < timesList.Count; i++)
+            {
+                var winningButtonPresses = 0;
+                for (int j = 0; j < timesList[i] + 1; j++)
+                {
+                    if (j == 0) { continue; }
+                    var minDistance = distancesList[i];
+                    var maxTime = timesList[i];
+                    var buttonHeld = j;
+
+                    var distanceMoved = (maxTime - buttonHeld) * buttonHeld;
+                    if (distanceMoved > minDistance)
+                    {
+                        winningButtonPresses += 1;
+                    }
+                }
+                winningButtonPressesList.Add(winningButtonPresses);
+            }
+            return winningButtonPressesList.Aggregate((a, x) => a * x);
+        }
+
+        public int DaySixPartTwoLogic(List<string> dataRows)
+        {
+            var timesList = dataRows[0].Split(":").ToList();
+            var maxTime = long.Parse(timesList[1].Trim().Replace(" ", ""));
+            var distancesList = dataRows[1].Split(":").ToList();
+            var minDistance = long.Parse(distancesList[1].Trim().Replace(" ", ""));
+            var winningButtonPresses = 0;
+            for (int i = 0; i < maxTime + 1; i++)
+            {
+                if (i == 0) { continue; }
+                var buttonHeld = i;
+                var distanceMoved = (maxTime - buttonHeld) * buttonHeld;
+                if (distanceMoved > minDistance)
+                {
+                    winningButtonPresses += 1;
+                }
+            }
+            return winningButtonPresses;
+        }
+        #endregion
+
         #region Day
         public int DayPartOneLogic(List<string> dataRows)
         {
@@ -564,6 +612,16 @@ namespace AdventOfCodeAPI.repository
                 return Task.FromResult(seedTraversalMap.DestinationRangeStart + nextMapNumber - seedTraversalMap.SourceRangeStart);
             }
         }
+
+        #region private Day Six
+        private List<int> ConvertDataStringToIntString(string dataString)
+        {
+            var dataParts = dataString.Split(":").ToList();
+            var individualDataList = dataParts[1].Split(" ").ToList();
+            individualDataList = individualDataList.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+            return individualDataList.Select(int.Parse).ToList();
+        }
+        #endregion
         #endregion
     }
 }
